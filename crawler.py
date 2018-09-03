@@ -16,7 +16,7 @@ def extract_email(mailtos):
         try:
             str1, str2 = href.split(':')
         except ValueError:
-            break
+            return ''
         
         return str2
 
