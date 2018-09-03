@@ -8,9 +8,19 @@ page = 'http://reecl.org/category/%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D1%87%D0%
 
 output = '/home/marin.petrov/workspace/reecl_crawler/output.csv'
 
-output_data = set()
+output_data = {}
 
-for i in range(200): # random large enough number of pages
+def extract_email(mailtos):
+    for i in mailtos:
+        href=i['href']
+        try:
+            str1, str2 = href.split(':')
+        except ValueError:
+            break
+        
+        return str2
+
+for i in range(1): # random large enough number of pages
     r = requests.get('{}{}/'.format(page,i))
     if r.status_code == 404:
         break
@@ -21,11 +31,21 @@ for i in range(200): # random large enough number of pages
     li = ul.find_all('li')
 
     for elem in li:
-        a = elem.find_all('a')
-        output_data.add(a[-1]['href'])
+        print '--------------------'
+        company_name = elem.find('a', rel="bookmark").text
+        print company_name
+        company_email = elem.select('a[href^=mailto:]')
+        print extract_email(company_email)
+        company_websites = elem.select('a[href^=http:]')
+        print company_website
+
+        # for c in company_name:
+        #     print c
+            
+            # output_data.add(all_links[-1]['href'])
 
 
-print output_data
+# print output_data
 # with open(output, 'a') as csv_file:
 #     writer = csv.writer(csv_file)
 #     for row in output_data:
