@@ -1,12 +1,12 @@
 from bs4 import BeautifulSoup
+from collections import OrderedDict
 import csv
-from datetime import datetime
 import requests
 
 page = 'http://reecl.org/category/%D0%B4%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D1%87%D0%B8%D1%86%D0%B8-%D0%B8-%D0%B8%D0%B7%D0%BF%D1%8A%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D0%B8/%D0%B8%D0%B7%D0%BF%D1%8A%D0%BB%D0%BD%D0%B8%D1%82%D0%B5%D0%BB%D0%B8-%D0%BF%D1%80%D0%BE%D0%B7%D0%BE%D1%80%D1%86%D0%B8/page/'
 
 output_file = '/home/marin.petrov/workspace/reecl_crawler/output.csv'
-output_data = []
+output_data = OrderedDict()
 
 def extract_email(mailtos):
     for i in mailtos:
@@ -40,12 +40,13 @@ for i in range(200): # random large enough number of pages
         for site in company_websites:
             company_row.append(site['href'])
 
-        output_data.append(company_row)
+        print company_row
+        output_data[company_name] = company_row
         
 print 'Dumping to file...'
 with open(output_file, 'a') as csv_file:
     writer = csv.writer(csv_file)
-    for company_row in output_data:
-        writer.writerow([unicode(s).encode("utf-8") for s in company_row])
+    for company in output_data:
+        writer.writerow([unicode(s).encode("utf-8") for s in output_data[company]])
 print 'Done!'
 
